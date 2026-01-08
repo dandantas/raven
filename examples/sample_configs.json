@@ -1,0 +1,215 @@
+[
+  {
+    "name": "GitHub API Status",
+    "description": "Monitors GitHub API status page",
+    "enabled": true,
+    "target": {
+      "url": "https://www.githubstatus.com/api/v2/status.json",
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "timeout": 10
+    },
+    "rules": [
+      {
+        "name": "Status OK",
+        "description": "Verify status indicator is 'none' (no incidents)",
+        "expression": "$.status.indicator",
+        "operator": "eq",
+        "expected_value": "none",
+        "alert_on_match": false
+      },
+      {
+        "name": "Status Degraded",
+        "description": "Alert if status is not 'none'",
+        "expression": "$.status.indicator",
+        "operator": "ne",
+        "expected_value": "none",
+        "alert_on_match": true
+      }
+    ],
+    "webhook": {
+      "url": "https://hooks.slack.com/services/T00/B00/XXX",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "retry_config": {
+        "max_attempts": 3,
+        "initial_delay_ms": 1000,
+        "max_delay_ms": 30000,
+        "multiplier": 2
+      }
+    },
+    "metadata": {
+      "created_by": "admin@example.com",
+      "tags": ["github", "external", "monitoring"]
+    }
+  },
+  {
+    "name": "Payment API Health Check",
+    "description": "Monitors payment gateway availability and response time",
+    "enabled": true,
+    "target": {
+      "url": "https://api.payment.example.com/health",
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "auth": {
+        "type": "bearer",
+        "token": "your-secret-token-here"
+      },
+      "timeout": 30
+    },
+    "rules": [
+      {
+        "name": "Check Status Field",
+        "description": "Verify status field equals 'healthy'",
+        "expression": "$.status",
+        "operator": "eq",
+        "expected_value": "healthy",
+        "alert_on_match": false
+      },
+      {
+        "name": "Check Response Time",
+        "description": "Alert if response time exceeds 5 seconds",
+        "expression": "$.response_time_ms",
+        "operator": "gt",
+        "expected_value": 5000,
+        "alert_on_match": true
+      },
+      {
+        "name": "Database Connection",
+        "description": "Alert if database is not connected",
+        "expression": "$.database.connected",
+        "operator": "ne",
+        "expected_value": true,
+        "alert_on_match": true
+      }
+    ],
+    "webhook": {
+      "url": "https://hooks.slack.com/services/T00/B00/XXX",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "retry_config": {
+        "max_attempts": 5,
+        "initial_delay_ms": 2000,
+        "max_delay_ms": 60000,
+        "multiplier": 2
+      }
+    },
+    "metadata": {
+      "created_by": "devops@example.com",
+      "tags": ["payment", "critical", "production"]
+    }
+  },
+  {
+    "name": "User Service Metrics",
+    "description": "Monitors user service metrics and thresholds",
+    "enabled": true,
+    "target": {
+      "url": "https://api.example.com/metrics/users",
+      "method": "GET",
+      "auth": {
+        "type": "basic",
+        "username": "monitoring",
+        "password": "secure-password"
+      },
+      "timeout": 15
+    },
+    "rules": [
+      {
+        "name": "User Count Low",
+        "description": "Alert if total users drops below threshold",
+        "expression": "$.total_users",
+        "operator": "lt",
+        "expected_value": 100,
+        "alert_on_match": true
+      },
+      {
+        "name": "Active Sessions High",
+        "description": "Alert if active sessions exceed capacity",
+        "expression": "$.active_sessions",
+        "operator": "gt",
+        "expected_value": 10000,
+        "alert_on_match": true
+      },
+      {
+        "name": "Error Rate",
+        "description": "Alert if error rate is above 5%",
+        "expression": "$.error_rate_percent",
+        "operator": "gt",
+        "expected_value": 5,
+        "alert_on_match": true
+      }
+    ],
+    "webhook": {
+      "url": "https://discord.com/api/webhooks/123/abc",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "retry_config": {
+        "max_attempts": 3,
+        "initial_delay_ms": 1000,
+        "max_delay_ms": 30000,
+        "multiplier": 2
+      }
+    },
+    "metadata": {
+      "created_by": "platform@example.com",
+      "tags": ["users", "metrics", "capacity"]
+    }
+  },
+  {
+    "name": "API Rate Limit Monitor",
+    "description": "Monitors API rate limit consumption",
+    "enabled": true,
+    "target": {
+      "url": "https://api.example.com/rate-limit",
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json",
+        "X-API-Key": "your-api-key"
+      },
+      "timeout": 10
+    },
+    "rules": [
+      {
+        "name": "Rate Limit Warning",
+        "description": "Alert when 80% of rate limit is consumed",
+        "expression": "$.usage_percent",
+        "operator": "gte",
+        "expected_value": 80,
+        "alert_on_match": true
+      },
+      {
+        "name": "Rate Limit Critical",
+        "description": "Critical alert at 95% consumption",
+        "expression": "$.usage_percent",
+        "operator": "gte",
+        "expected_value": 95,
+        "alert_on_match": true
+      }
+    ],
+    "webhook": {
+      "url": "https://hooks.slack.com/services/T00/B00/XXX",
+      "method": "POST",
+      "retry_config": {
+        "max_attempts": 3,
+        "initial_delay_ms": 1000,
+        "max_delay_ms": 30000,
+        "multiplier": 2
+      }
+    },
+    "metadata": {
+      "created_by": "api-team@example.com",
+      "tags": ["api", "rate-limit", "monitoring"]
+    }
+  }
+]
+
