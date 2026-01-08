@@ -18,7 +18,7 @@ A high-performance Golang microservice for dynamic API health monitoring with JS
 
 ## Technology Stack
 
-- **Go**: 1.23.4
+- **Go**: 1.25.4
 - **MongoDB**: Document store for configurations and history
 - **Dependencies**:
   - `go.mongodb.org/mongo-driver` - MongoDB driver
